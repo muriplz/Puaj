@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://dgigphcwfu4gx"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_5g7b1"]
+
+[node name="TrashCan" type="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.06886, 0)
+mesh = SubResource("SphereMesh_5g7b1")

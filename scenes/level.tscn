@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://duk7b3gleag5k"]
+
+[ext_resource type="Script" path="res://scenes/level.gd" id="1_dwmd3"]
+[ext_resource type="PackedScene" uid="uid://dgigphcwfu4gx" path="res://scenes/TrashCan.tscn" id="1_lhc8e"]
+[ext_resource type="Script" path="res://scripts/tile_grid.gd" id="3_djj1w"]
+[ext_resource type="Script" path="res://scripts/TileManager.gd" id="4_u4rvx"]
+
+[node name="Level" type="Node3D"]
+script = ExtResource("1_dwmd3")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 200, 0)
+light_energy = 0.677
+
+[node name="TrashCan" parent="." instance=ExtResource("1_lhc8e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.597248, 0, -0.815518)
+
+[node name="GridMap" type="GridMap" parent="."]
+script = ExtResource("3_djj1w")
+
+[node name="TileManager" type="Node3D" parent="."]
+script = ExtResource("4_u4rvx")
