@@ -1,22 +1,42 @@
 [gd_scene load_steps=5 format=3 uid="uid://duk7b3gleag5k"]
 
-[ext_resource type="Script" path="res://scripts/level.gd" id="1_5dgvw"]
-[ext_resource type="PackedScene" uid="uid://dgigphcwfu4gx" path="res://scenes/TrashCan.tscn" id="2_dqn5l"]
-[ext_resource type="Script" path="res://scripts/tile_grid.gd" id="3_y83lb"]
-[ext_resource type="Script" path="res://scripts/TileManager.gd" id="4_32111"]
+[ext_resource type="Script" path="res://scripts/Level.gd" id="1_i5dc1"]
+[ext_resource type="PackedScene" uid="uid://dgigphcwfu4gx" path="res://scenes/trashcan.tscn" id="1_lhc8e"]
+[ext_resource type="Script" path="res://scripts/TileManager.gd" id="4_u4rvx"]
+
+[sub_resource type="GDScript" id="GDScript_yqe6k"]
+script/source = "extends GridMap
+
+func _ready():
+	# Assuming the ID of your white plane tile in the MeshLibrary is 0
+	var tile_id = 0
+	
+	# Define the range for x, y, and z coordinates. Adjust these values based on your GridMap size
+	var x_range = 10 # Number of tiles in x direction
+	var z_range = 10 # Number of tiles in z direction
+	var y_level = 0 # Y level where the tiles will be placed
+
+	# Loop through each coordinate within the specified range and set the cell
+	for x in range(x_range):
+		for z in range(z_range):
+			# Use Vector3 to specify the coordinates
+			var position = Vector3(x, y_level, z)
+			# Adjusted call to set_cell_item
+			set_cell_item(position, tile_id, false)
+"
 
 [node name="Level" type="Node3D"]
-script = ExtResource("1_5dgvw")
+script = ExtResource("1_i5dc1")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 200, 0)
 light_energy = 0.677
 
-[node name="TrashCan" parent="." instance=ExtResource("2_dqn5l")]
+[node name="TrashCan" parent="." instance=ExtResource("1_lhc8e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.597248, 0, -0.815518)
 
 [node name="GridMap" type="GridMap" parent="."]
-script = ExtResource("3_y83lb")
+script = SubResource("GDScript_yqe6k")
 
 [node name="TileManager" type="Node3D" parent="."]
-script = ExtResource("4_32111")
+script = ExtResource("4_u4rvx")

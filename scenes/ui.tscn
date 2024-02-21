@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://mg65nvft041w"]
 
-[ext_resource type="Script" path="res://scripts/hall_opener.gd" id="1_kbept"]
+[ext_resource type="Script" path="res://scripts/UIOpener.gd" id="1_kbept"]
 
 [sub_resource type="GDScript" id="GDScript_kkwjd"]
 script/source = "extends Button
