@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://duk7b3gleag5k"]
 
 [ext_resource type="Script" path="res://scripts/Level.gd" id="1_i5dc1"]
-[ext_resource type="PackedScene" uid="uid://dgigphcwfu4gx" path="res://scenes/trashcan.tscn" id="1_lhc8e"]
+[ext_resource type="PackedScene" uid="uid://dgigphcwfu4gx" path="res://scenes/trashcan.tscn" id="2_1o5pc"]
 [ext_resource type="Script" path="res://scripts/TileManager.gd" id="4_u4rvx"]
 
 [sub_resource type="GDScript" id="GDScript_yqe6k"]
@@ -32,7 +32,7 @@ script = ExtResource("1_i5dc1")
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 200, 0)
 light_energy = 0.677
 
-[node name="TrashCan" parent="." instance=ExtResource("1_lhc8e")]
+[node name="TrashCan" parent="." instance=ExtResource("2_1o5pc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.597248, 0, -0.815518)
 
 [node name="GridMap" type="GridMap" parent="."]
