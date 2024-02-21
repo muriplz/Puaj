@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://brgg2t3eb2ns8"]
 
-[ext_resource type="Script" path="res://scripts/player_movement.gd" id="1_giegl"]
-[ext_resource type="Script" path="res://scripts/player_camera.gd" id="2_2cmow"]
+[ext_resource type="Script" path="res://scripts/player/PlayerMovement.gd" id="1_giegl"]
+[ext_resource type="Script" path="res://scripts/player/PlayerCamera.gd" id="2_2cmow"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_x845d"]
 
