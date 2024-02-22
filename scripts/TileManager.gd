@@ -1,43 +1,64 @@
+# TileManager.gd
 extends Node
 
 var gridmap: GridMap
-var player: CharacterBody3D # Reference to your player node
-var tile_size = Vector3(10, 0.1, 10) # Size of each tile
-var render_distance = 3 # Number of tiles from the player to load in each direction
+var loaded_tiles = {}
+var tile_size = Vector3(10, 0.1, 10)
+var render_distance = 3  # Adjust this as needed
 
 func _ready():
-	gridmap = $GridMap # Assign your GridMap node here
-	player = $Player # Assign your player node here
+	gridmap = $GridMap  # Assign your GridMap node path
+	var tile_getter = $TileGetter  # Assign your TileGetter node path
+	tile_getter.image_loaded.connect(self._on_image_downloaded)
 
-func _process(delta):
-	update_tiles()
+# Checks if a tile is already loaded
+func is_tile_loaded(tile_coords: Vector3) -> bool:
+	return str(tile_coords) in loaded_tiles
 
-func update_tiles():
-	var player_tile = world_to_tile(player.translation)
-	for x in range(-render_distance, render_distance + 1):
-		for z in range(-render_distance, render_distance + 1):
-			var current_tile = player_tile + Vector3(x, 0, z)
-			load_tile(current_tile)
+# Requests TileGetter to load an image for the tile
+func request_load_tile(tile_coords: Vector3):
+	if not is_tile_loaded(tile_coords):
+		var tile_getter = get_node("../TileManager/TileGetter")  # Correct path to your TileGetter node
+		tile_getter.get_image(tile_coords)  # This function should exist in TileGetter and handle the request
+		loaded_tiles[str(tile_coords)] = null  # Mark as pending
 
-func world_to_tile(world_position: Vector3) -> Vector3:
-	# Convert the world position to tile grid coordinates
-	var tile_x = int(world_position.x / tile_size.x)
-	var tile_z = int(world_position.z / tile_size.z)
-	return Vector3(tile_x, 0, tile_z)
+# Signal callback when TileGetter has downloaded an image
+func _on_image_downloaded(tile_coords: Vector3, image: Image):
+	var texture = ImageTexture.new()
+	texture.create_from_image(image)
+	apply_texture_to_tile(tile_coords, texture)
 
-func load_tile(tile_coords: Vector3):
-	# Check if the tile is already loaded
-	if gridmap.get_cell_item(tile_coords) == -1:
-		var tile_index = 0 # Assuming your mesh library has a single mesh
-		gridmap.set_cell_item(tile_coords, tile_index, -1) # -1 clears the cell
-		var tile_path = get_tile_path_from_coords(tile_coords)
-		var texture = ResourceLoader.load(tile_path) # Load the tile texture
-		var material = StandardMaterial3D.new()
-		material.albedo_texture = texture
-		# Assuming you have a way to assign this material to the GridMap's material or shader
+# Applies the downloaded texture to the tile
+func apply_texture_to_tile(tile_coords: Vector3, texture: Texture):
+	var mesh_instance = MeshInstance3D.new()
+	mesh_instance.translation = tile_coords * tile_size
+	var material = StandardMaterial3D.new()
+	material.albedo_texture = texture
+	mesh_instance.material_override = material
+	add_child(mesh_instance)
+	loaded_tiles[str(tile_coords)] = mesh_instance
 
-func get_tile_path_from_coords(tile_coords: Vector3) -> String:
-	# Construct the URL path to the tile texture based on its coordinates
-	var tile_x = int(tile_coords.x)
-	var tile_z = int(tile_coords.z)
-	return "https://kryeit.com/images/tiles/15/%s_%s.png" % [tile_x, tile_z]
+# Update method to be called by PlayerManager
+func update_tiles_around(center_tile: Vector3):
+	var start_x = int(center_tile.x) - render_distance
+	var end_x = int(center_tile.x) + render_distance
+	var start_z = int(center_tile.z) - render_distance
+	var end_z = int(center_tile.z) + render_distance
+	
+	for x in range(start_x, end_x + 1):
+		for z in range(start_z, end_z + 1):
+			var tile_coords = Vector3(x, 0, z)  # Assuming y is up and tiles are on xz-plane
+			request_load_tile(tile_coords)
+
+# Removes tiles that are outside the render distance
+func unload_tiles_outside_render_distance(center_tile: Vector3):
+	var tiles_to_unload = []
+	for tile_key in loaded_tiles.keys():
+		var tile_coords = loaded_tiles[tile_key].translation
+		if tile_coords.distance_to(center_tile) > render_distance * tile_size.x:
+			tiles_to_unload.append(tile_key)
+
+	for tile_key in tiles_to_unload:
+		var mesh_instance = loaded_tiles[tile_key]
+		mesh_instance.queue_free()  # Free the mesh instance
+		loaded_tiles.erase(tile_key)  # Remove from the dictionary

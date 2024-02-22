@@ -4,6 +4,8 @@ extends CharacterBody3D
 
 @onready var camera = $Camera3D
 
+signal request_tile_update(player_tile_coords)
+
 func _physics_process(_delta):
 	var direction = Vector3.ZERO
 
@@ -25,3 +27,12 @@ func _physics_process(_delta):
 
 	# Move the character
 	move_and_collide(direction)
+	
+	# Update the tiles depending on render distance
+	update_tiles()
+
+func update_tiles():
+	var player_position = global_transform.origin
+	var player_tile_coords = Utils.world_to_tile(player_position)
+	emit_signal("request_tile_update", player_tile_coords)
+	
