@@ -22,3 +22,5 @@ mesh = SubResource("CylinderMesh_cguik")
 transform = Transform3D(1, 0, 0, 0, 0.981148, 0.193258, 0, -0.193258, 0.981148, 0.112487, 2.56389, 2.75906)
 fov = 113.688
 script = ExtResource("2_2cmow")
+
+[node name="TileManager" type="Node3D" parent="."]
