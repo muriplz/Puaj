@@ -1,34 +1,31 @@
-# TileManager.gd
 extends Node
 
 var gridmap: GridMap
 var loaded_tiles = {}
-var tile_size = Vector3(10, 0.1, 10)
+var tile_size = Vector3(10, 0.1, 10)  # Adjust this as needed
 var render_distance = 3  # Adjust this as needed
 
 func _ready():
-	gridmap = $GridMap  # Assign your GridMap node path
-	var tile_getter = $TileGetter  # Assign your TileGetter node path
+	gridmap = get_parent().get_node("GridMap")  # Make sure this is the correct path to your GridMap node
+	var tile_getter = get_node("TileGetter")  # Make sure this is the correct path to your TileGetter node
 	tile_getter.image_loaded.connect(self._on_image_downloaded)
+	print("TileManager is ready and connected to TileGetter.")
 
-# Checks if a tile is already loaded
 func is_tile_loaded(tile_coords: Vector3) -> bool:
 	return str(tile_coords) in loaded_tiles
 
-# Requests TileGetter to load an image for the tile
 func request_load_tile(tile_coords: Vector3):
 	if not is_tile_loaded(tile_coords):
-		var tile_getter = get_node("../TileManager/TileGetter")  # Correct path to your TileGetter node
-		tile_getter.get_image(tile_coords)  # This function should exist in TileGetter and handle the request
-		loaded_tiles[str(tile_coords)] = null  # Mark as pending
+		print("Requesting tile at: %s" % [tile_coords])
+		var tile_getter = get_node("TileGetter")
+		tile_getter.get_image(tile_coords)
+		loaded_tiles[str(tile_coords)] = null
 
-# Signal callback when TileGetter has downloaded an image
 func _on_image_downloaded(tile_coords: Vector3, image: Image):
-	var texture = ImageTexture.new()
-	texture.create_from_image(image)
+	print("Image downloaded for tile coordinates: %s" % [tile_coords])
+	var texture = ImageTexture.create_from_image(image)
 	apply_texture_to_tile(tile_coords, texture)
 
-# Applies the downloaded texture to the tile
 func apply_texture_to_tile(tile_coords: Vector3, texture: Texture):
 	var mesh_instance = MeshInstance3D.new()
 	mesh_instance.translation = tile_coords * tile_size
@@ -37,28 +34,32 @@ func apply_texture_to_tile(tile_coords: Vector3, texture: Texture):
 	mesh_instance.material_override = material
 	add_child(mesh_instance)
 	loaded_tiles[str(tile_coords)] = mesh_instance
+	print("Created mesh instance for tile coordinates: %s" % [tile_coords])
 
-# Update method to be called by PlayerManager
 func update_tiles_around(center_tile: Vector3):
+	print("Updating tiles around center: %s" % [center_tile])
 	var start_x = int(center_tile.x) - render_distance
 	var end_x = int(center_tile.x) + render_distance
 	var start_z = int(center_tile.z) - render_distance
 	var end_z = int(center_tile.z) + render_distance
-	
+
 	for x in range(start_x, end_x + 1):
 		for z in range(start_z, end_z + 1):
-			var tile_coords = Vector3(x, 0, z)  # Assuming y is up and tiles are on xz-plane
+			var tile_coords = Vector3(x, 0, z)
 			request_load_tile(tile_coords)
 
-# Removes tiles that are outside the render distance
 func unload_tiles_outside_render_distance(center_tile: Vector3):
+	print("Unloading tiles outside render distance from center: %s" % [center_tile])
 	var tiles_to_unload = []
 	for tile_key in loaded_tiles.keys():
-		var tile_coords = loaded_tiles[tile_key].translation
-		if tile_coords.distance_to(center_tile) > render_distance * tile_size.x:
-			tiles_to_unload.append(tile_key)
+		var mesh_instance = loaded_tiles[tile_key]
+		if mesh_instance != null:
+			var tile_coords = mesh_instance.translation
+			if tile_coords.distance_to(center_tile * tile_size) > render_distance * tile_size.x:
+				tiles_to_unload.append(tile_key)
 
 	for tile_key in tiles_to_unload:
 		var mesh_instance = loaded_tiles[tile_key]
-		mesh_instance.queue_free()  # Free the mesh instance
-		loaded_tiles.erase(tile_key)  # Remove from the dictionary
+		mesh_instance.queue_free()
+		loaded_tiles.erase(tile_key)
+		print("Unloaded tile at coordinates: %s" % [tile_key])

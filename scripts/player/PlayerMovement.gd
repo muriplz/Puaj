@@ -4,7 +4,10 @@ extends CharacterBody3D
 
 @onready var camera = $Camera3D
 
+var tile_manager
+
 signal request_tile_update(player_tile_coords)
+
 
 func _physics_process(_delta):
 	var direction = Vector3.ZERO
@@ -27,12 +30,19 @@ func _physics_process(_delta):
 
 	# Move the character
 	move_and_collide(direction)
-	
-	# Update the tiles depending on render distance
-	update_tiles()
 
-func update_tiles():
-	var player_position = global_transform.origin
-	var player_tile_coords = Utils.world_to_tile(player_position)
-	emit_signal("request_tile_update", player_tile_coords)
+	update_tiles_around_player()
+	# Update the tiles depending on render distance
 	
+func set_tile_manager(tm):
+	tile_manager = tm
+
+func _ready():
+	update_tiles_around_player()
+
+func update_tiles_around_player():
+	if tile_manager:
+		var player_tile_coords = Utils.world_to_tile(global_transform.origin)
+		tile_manager.update_tiles_around(player_tile_coords)
+	else:
+		push_error("TileManager reference not set in Player.")	
