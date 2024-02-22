@@ -13,10 +13,7 @@ var orbit_speed = 0.005
 var distance = 5.0  # Initial distance from the player to the camera
 
 func _ready():
-	player = get_node_or_null("/root/Main/Player")
-	if player == null:
-		print("Player node not found. Make sure the path to the player node is correct.")
-		return
+	player = get_parent()
 
 	# Adjust the initial camera setup to start from a better angle
 	var initial_direction = Vector3(

@@ -1,0 +1,81 @@
+[gd_scene load_steps=8 format=3 uid="uid://cxynsi2vr6h6t"]
+
+[ext_resource type="Script" path="res://scripts/player/PlayerMovement.gd" id="1_qetjv"]
+[ext_resource type="Script" path="res://scripts/UIOpener.gd" id="1_r7q8o"]
+[ext_resource type="Script" path="res://scripts/player/PlayerCamera.gd" id="2_j6n1o"]
+[ext_resource type="Script" path="res://scripts/TileManager.gd" id="3_carvu"]
+[ext_resource type="Script" path="res://scripts/TileGetter.gd" id="4_1lgmd"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_x3jx3"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_3005l"]
+
+[node name="Level" type="Node3D"]
+
+[node name="Player" type="CharacterBody3D" parent="."]
+script = ExtResource("1_qetjv")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CylinderShape3D_x3jx3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CylinderMesh_3005l")
+skeleton = NodePath("../CollisionShape3D")
+
+[node name="Camera3D" type="Camera3D" parent="Player"]
+script = ExtResource("2_j6n1o")
+
+[node name="GridMap" type="GridMap" parent="."]
+
+[node name="TileManager" type="Node3D" parent="."]
+script = ExtResource("3_carvu")
+
+[node name="TileGetter" type="HTTPRequest" parent="TileManager"]
+script = ExtResource("4_1lgmd")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.940893, 0.338705, 1.62622e-08, -0.295241, 0.820154, 0.490083, 0.165993, -0.461115, 0.871676, -7.46604, 6.75326, 7.6757)
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="BurguerOpener" type="Button" parent="UI"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.45
+anchor_top = 1.0
+anchor_right = 1.45
+anchor_bottom = 1.0
+offset_left = 34.0
+offset_top = -3.0
+offset_right = 104.0
+offset_bottom = 64.0
+script = ExtResource("1_r7q8o")
+
+[node name="Hall" type="MarginContainer" parent="UI"]
+visible = false
+layout_mode = 0
+offset_left = 60.0
+offset_top = 124.0
+offset_right = 298.0
+offset_bottom = 414.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Hall"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="UI/Hall/VBoxContainer"]
+layout_mode = 2
+text = "Button"
+
+[node name="Button2" type="Button" parent="UI/Hall/VBoxContainer"]
+layout_mode = 2
+text = "Button"
+
+[node name="Button3" type="Button" parent="UI/Hall/VBoxContainer"]
+layout_mode = 2
+text = "Button"

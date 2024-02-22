@@ -1,7 +1,7 @@
 class_name Utils
 
 static var zoom = 15
-static var render_distance = 3
+static var render_distance = 2
 static var tile_size = Vector2(10, 10)  # Size of a tile in game units
 static var origin_latlon = Vector2(40.413500, -6.866500)  # Latitude and Longitude of the game world's origin
 static var origin_tile = latlon_to_tile(origin_latlon.x, origin_latlon.y)
