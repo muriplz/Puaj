@@ -83,5 +83,3 @@ text = "Button"
 [node name="Button3" type="Button" parent="UI/Hall/VBoxContainer"]
 layout_mode = 2
 text = "Button"
-
-[connection signal="image_loaded" from="TileManager/TileGetter" to="TileManager" method="_on_image_loaded"]

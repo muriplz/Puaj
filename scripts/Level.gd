@@ -5,7 +5,7 @@ extends Node3D
 func _ready():
 	var player = get_node("Player")
 	if player:
-		player.player_moved.connect(Callable(self, "_on_player_move"))
+		player.player_moved.connect(_on_player_move)
 	else:
 		print("Player node not found.")
 
