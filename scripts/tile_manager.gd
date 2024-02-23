@@ -1,48 +1,72 @@
 extends Node
 
-var gridmap: GridMap
-var loaded_tiles := {}
-var tile_size := Vector2(10, 10)  # Adjust as needed
-var render_distance := 2  # Adjust as needed
-@onready var tile_getter := $TileGetter as HTTPRequest
+# Reference to the TileGetter node
+@onready var tile_getter = $TileGetter
+# Dictionary to keep track of loaded tiles
+var loaded_tiles = {}
+var loaded_meshes = {}
+var tile_size = Vector2(10, 10)  # Size in pixels
 
 func _ready():
-	gridmap = get_parent().get_node("GridMap") as GridMap
-
+	# Connect to the TileGetter's image_loaded signal
 	tile_getter.image_loaded.connect(Callable(self, "_on_image_loaded"))
 
-	print(gridmap)
-	print("TileManager is ready and connected to TileGetter.")
+# Slot for the image_loaded signal
+func _on_image_loaded(texture: Texture, tile_coords: Vector2):
+	print("WAHOO")
+	if not loaded_tiles.has(tile_coords):
+		# Load the tile using TextureRect
+		load_tile(tile_coords, texture)
 
-func _on_tile_getter_image_loaded(texture: Texture, tile_coords: Vector2):
-	if not is_tile_loaded(tile_coords):
-		var mesh_instance := create_mesh_for_tile(tile_coords)
-		apply_texture_to_mesh(mesh_instance, texture)
-		var tile_key := str(tile_coords)
-		loaded_tiles[tile_key] = mesh_instance
-		print("Loaded and applied texture for tile: ", tile_coords)
+func load_tile(tile_coords: Vector2, texture: Texture):
+	var key := str(tile_coords)
+	if not loaded_meshes.has(key):
+		var mesh_instance := create_mesh_instance_with_texture(texture, tile_coords)
+		# Store the mesh instance using tile coordinates as the key
+		loaded_meshes[key] = mesh_instance
+		print("Mesh loaded at: ", tile_coords)
+		# Store the reference to the TextureRect for possible future use
+		loaded_tiles[tile_coords] = tile_coords
+		print("Tile loaded at: ", tile_coords)
 
-func is_tile_loaded(tile_coords: Vector2) -> bool:
-	return str(tile_coords) in loaded_tiles
+func unload_tile(tile_coords: Vector2):
+	if loaded_tiles.has(tile_coords):
+		pass
 
-func request_load_tile(tile_coords: Vector2):
-	if not is_tile_loaded(tile_coords):
-		if tile_getter != null:
-			tile_getter.request_image(tile_coords)
-			print("Requested tile at: ", tile_coords)
+# Functionality to request a tile image based on its coordinates
+func request_tile_image(tile_coords: Vector2):
+	if not loaded_tiles.has(tile_coords):
+		tile_getter.request_image(tile_coords)  # Assumes TileGetter has a request_image method
 
-
-func create_mesh_for_tile(tile_coords: Vector2) -> MeshInstance3D:
+func create_mesh_instance_with_texture(texture: Texture, tile_coords: Vector2) -> MeshInstance3D:
 	var mesh_instance := MeshInstance3D.new()
-	var position := Vector3(tile_coords.x * tile_size.x, 0, tile_coords.y * tile_size.y)
-	mesh_instance.transform.origin = position
-	add_child(mesh_instance)
-	return mesh_instance
+	var plane_mesh := PlaneMesh.new()
+	plane_mesh.size = tile_size # Size of the plane, adjust as needed
 
-func apply_texture_to_mesh(mesh_instance: MeshInstance3D, texture: Texture):
 	var material := StandardMaterial3D.new()
 	material.albedo_texture = texture
+	mesh_instance.mesh = plane_mesh
 	mesh_instance.material_override = material
-	print("Applied texture to mesh for tile_coords: ", mesh_instance.translation)
 
-# Add more functions as needed for updating and unloading tiles.
+	# Calculate the position to place the MeshInstance3D at the center of the grid cell
+	var grid_position := Utils.tile_to_world(tile_coords.x, tile_coords.y)
+	
+	# Set the position using transform.origin in Godot 4.0 and later
+	mesh_instance.transform.origin = grid_position
+
+	# Add the MeshInstance3D to the scene
+	add_child(mesh_instance)
+
+	return mesh_instance
+
+func unload_mesh(tile_coords: Vector2):
+	var key := str(tile_coords)
+	if loaded_meshes.has(key):
+		# Explicitly cast the retrieved value to MeshInstance3D
+		var mesh_instance := loaded_meshes[key] as MeshInstance3D
+		if mesh_instance:
+			mesh_instance.queue_free() # Remove the mesh instance from the scene
+			loaded_meshes.erase(key) # Remove the reference from the dictionary
+			print("Mesh unloaded at: ", tile_coords)
+		else:
+			print("Failed to cast to MeshInstance3D or mesh_instance is null for key: ", key)

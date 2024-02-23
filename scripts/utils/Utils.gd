@@ -14,8 +14,8 @@ static func world_to_latlon(world_position: Vector3) -> Vector2:
 
 # Converts a world position (Vector3) to tile coordinates (Vector2)
 static func world_to_tile(world_position: Vector3) -> Vector2:
-	var tile_x = int(origin_tile.x + world_position.x / tile_size.x)
-	var tile_y = int(origin_tile.y + world_position.z / tile_size.y)  # Assuming Z-axis is North/South in Godot
+	var tile_x = round(origin_tile.x + world_position.x / tile_size.x)
+	var tile_y = round(origin_tile.y + world_position.z / tile_size.y)  # Assuming Z-axis is North/South in Godot
 	return Vector2(tile_x, tile_y)
 
 # Converts latitude/longitude (Vector2) to a world position (Vector3)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cxynsi2vr6h6t"]
+[gd_scene load_steps=10 format=3 uid="uid://cxynsi2vr6h6t"]
 
 [ext_resource type="Script" path="res://scripts/player/PlayerMovement.gd" id="1_qetjv"]
 [ext_resource type="Script" path="res://scripts/Level.gd" id="1_qh5ps"]
@@ -10,6 +10,8 @@
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_x3jx3"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_3005l"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_an7ca"]
 
 [node name="Level" type="Node3D"]
 script = ExtResource("1_qh5ps")
@@ -30,6 +32,7 @@ skeleton = NodePath("../CollisionShape3D")
 script = ExtResource("2_j6n1o")
 
 [node name="GridMap" type="GridMap" parent="."]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
 
 [node name="TileManager" type="Node3D" parent="."]
 script = ExtResource("3_carvu")
@@ -82,3 +85,8 @@ text = "Button"
 [node name="Button3" type="Button" parent="UI/Hall/VBoxContainer"]
 layout_mode = 2
 text = "Button"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_an7ca")
+
+[connection signal="image_loaded" from="TileManager/TileGetter" to="TileManager" method="_on_image_loaded"]

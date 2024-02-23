@@ -10,6 +10,5 @@ func _ready():
 		print("Player node not found.")
 
 func _on_player_move(player_position):
-	var tile_manager = $TileManager
-	tile_manager.request_load_tile(Utils.world_to_tile(player_position))
+	pass
 	# Additional logic to be executed when the player moves.
