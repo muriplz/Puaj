@@ -5,15 +5,10 @@ extends Node
 # Dictionary to keep track of loaded tiles
 var loaded_tiles = {}
 var loaded_meshes = {}
-var tile_size = Vector2(10, 10)  # Size in pixels
-
-func _ready():
-	# Connect to the TileGetter's image_loaded signal
-	tile_getter.image_loaded.connect(Callable(self, "_on_image_loaded"))
+var tile_size = Utils.tile_size  # Size in pixels
 
 # Slot for the image_loaded signal
 func _on_image_loaded(texture: Texture, tile_coords: Vector2):
-	print("WAHOO")
 	if not loaded_tiles.has(tile_coords):
 		# Load the tile using TextureRect
 		load_tile(tile_coords, texture)
@@ -36,13 +31,20 @@ func unload_tile(tile_coords: Vector2):
 # Functionality to request a tile image based on its coordinates
 func request_tile_image(tile_coords: Vector2):
 	if not loaded_tiles.has(tile_coords):
-		tile_getter.request_image(tile_coords)  # Assumes TileGetter has a request_image method
+		tile_getter.queue_tile(tile_coords)  # Assumes TileGetter has a request_image method
 
+func render_chunks(tile_coords: Vector2):
+	var render_distance = Utils.render_distance
+	for x in range(-render_distance, render_distance + 1):
+		for z in range(-render_distance, render_distance + 1):
+			var current_tile = tile_coords + Vector2(x, z)
+			request_tile_image(current_tile)
+			
 func create_mesh_instance_with_texture(texture: Texture, tile_coords: Vector2) -> MeshInstance3D:
 	var mesh_instance := MeshInstance3D.new()
 	var plane_mesh := PlaneMesh.new()
-	plane_mesh.size = tile_size # Size of the plane, adjust as needed
-
+	plane_mesh.size = tile_size
+	
 	var material := StandardMaterial3D.new()
 	material.albedo_texture = texture
 	mesh_instance.mesh = plane_mesh

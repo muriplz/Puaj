@@ -39,7 +39,7 @@ func _input(event):
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
 			distance = max(distance - 1, 5) # Zoom in, minimum distance 5
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.pressed:
-			distance = min(distance + 1, 20) # Zoom out, maximum distance 20
+			distance = min(distance + 1, 40) # Zoom out, maximum distance 20
 
 func _process(_delta):
 	if player == null:

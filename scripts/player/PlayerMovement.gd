@@ -1,6 +1,6 @@
 extends CharacterBody3D
 
-@export var speed = 0.1
+@export var speed = 0.5
 
 @onready var camera = $Camera3D
 
@@ -42,7 +42,7 @@ func _physics_process(_delta):
 func update_tiles_around_player():
 
 	var tile_coords = Utils.world_to_tile(global_transform.origin)
-	tile_manager.request_tile_image(tile_coords)
+	tile_manager.render_chunks(tile_coords)
 		
 	#tile_manager.update_tiles_around(player_tile_coords)
 		
