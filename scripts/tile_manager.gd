@@ -14,17 +14,19 @@ func _on_image_loaded(texture: Texture, tile_coords: Vector2):
 		load_tile(tile_coords, texture)
 
 func load_tile(tile_coords: Vector2, texture: Texture):
-	if not loaded_meshes.has(tile_coords):
+	var key := str(tile_coords)
+	if not loaded_meshes.has(key):
 		var mesh_instance := create_mesh_instance_with_texture(texture, tile_coords)
-		loaded_meshes[tile_coords] = mesh_instance
+		# Store the mesh instance using tile coordinates as the key
+		loaded_meshes[key] = mesh_instance
+		print("Mesh loaded at: ", tile_coords)
+		# Store the reference to the TextureRect for possible future use
 		loaded_tiles[tile_coords] = tile_coords
-
+		print("Tile loaded at: ", tile_coords)
 
 func unload_tile(tile_coords: Vector2):
 	if loaded_tiles.has(tile_coords):
-
-		unload_mesh(tile_coords)
-		loaded_tiles.erase(tile_coords)
+		pass
 
 # Functionality to request a tile image based on its coordinates
 func request_tile_image(tile_coords: Vector2):
@@ -33,21 +35,11 @@ func request_tile_image(tile_coords: Vector2):
 
 func render_chunks(tile_coords: Vector2):
 	var render_distance = Utils.render_distance
-	var tiles_to_keep = []
-
-	# Calculate which tiles should be loaded
 	for x in range(-render_distance, render_distance + 1):
 		for z in range(-render_distance, render_distance + 1):
 			var current_tile = tile_coords + Vector2(x, z)
 			request_tile_image(current_tile)
-			tiles_to_keep.append(current_tile)
-
-	# Determine which tiles should be unloaded
-	var loaded_tiles_keys = loaded_tiles.keys()  # Use keys() to iterate over tile coordinates
-	for key in loaded_tiles_keys:
-		if not tiles_to_keep.has(Vector2(key.x, key.y)):
-			unload_tile(Vector2(key.x, key.y))
-
+			
 func create_mesh_instance_with_texture(texture: Texture, tile_coords: Vector2) -> MeshInstance3D:
 	var mesh_instance := MeshInstance3D.new()
 	var plane_mesh := PlaneMesh.new()
@@ -63,7 +55,6 @@ func create_mesh_instance_with_texture(texture: Texture, tile_coords: Vector2) -
 	
 	# Set the position using transform.origin in Godot 4.0 and later
 	mesh_instance.transform.origin = grid_position
-	
 
 	# Add the MeshInstance3D to the scene
 	add_child(mesh_instance)
@@ -71,12 +62,13 @@ func create_mesh_instance_with_texture(texture: Texture, tile_coords: Vector2) -
 	return mesh_instance
 
 func unload_mesh(tile_coords: Vector2):
-	if loaded_meshes.has(tile_coords):
+	var key := str(tile_coords)
+	if loaded_meshes.has(key):
 		# Explicitly cast the retrieved value to MeshInstance3D
-		var mesh_instance := loaded_meshes[tile_coords] as MeshInstance3D
+		var mesh_instance := loaded_meshes[key] as MeshInstance3D
 		if mesh_instance:
 			mesh_instance.queue_free() # Remove the mesh instance from the scene
-			loaded_meshes.erase(tile_coords) # Remove the reference from the dictionary
+			loaded_meshes.erase(key) # Remove the reference from the dictionary
 			print("Mesh unloaded at: ", tile_coords)
 		else:
-			print("Failed to cast to MeshInstance3D or mesh_instance is null for key: ", tile_coords)
+			print("Failed to cast to MeshInstance3D or mesh_instance is null for key: ", key)

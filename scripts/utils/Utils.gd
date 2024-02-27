@@ -1,9 +1,9 @@
 class_name Utils
 
-static var zoom = 17
+static var zoom = 15
 static var render_distance = 1
-static var tile_size = Vector2(10, 10)  # Size of a tile in game units
-static var origin_latlon = Vector2(40.968097, -5.679194)  # Latitude and Longitude of the game world's origin
+static var tile_size = Vector2(50, 50)  # Size of a tile in game units
+static var origin_latlon = Vector2(38.870127, -6.989353)  # Latitude and Longitude of the game world's origin
 static var origin_tile = latlon_to_tile(origin_latlon.x, origin_latlon.y)
 static var meters_per_unit = 1.0  # How many meters in the real world one game unit represents
 
