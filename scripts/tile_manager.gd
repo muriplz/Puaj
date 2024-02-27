@@ -22,6 +22,7 @@ func load_tile(tile_coords: Vector2, texture: Texture):
 
 func unload_tile(tile_coords: Vector2):
 	if loaded_tiles.has(tile_coords):
+
 		unload_mesh(tile_coords)
 		loaded_tiles.erase(tile_coords)
 
