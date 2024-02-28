@@ -34,12 +34,13 @@ func _input(event):
 		# Ensure the camera does not flip over
 		vertical_angle = clamp(vertical_angle, PI / 12, PI / 2)
 
-	# Adjusting zoom by changing distance
+# Adjusting zoom by changing distance
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
 			distance = max(distance - 1, 5) # Zoom in, minimum distance 5
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.pressed:
-			distance = min(distance + 1, 40) # Zoom out, maximum distance 20
+			distance = min(distance + 1, 100) # Zoom out, maximum distance 100
+
 
 func _process(_delta):
 	if player == null:
