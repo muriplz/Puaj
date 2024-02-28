@@ -14,7 +14,7 @@ func _init():
 	for i in range(max_concurrent_requests):
 		thread_pool.append(Thread.new())
 
-func _process(delta):
+func _process(_delta):
 	# Process queued tile requests if there's capacity
 	for thread in thread_pool:
 		if thread.is_started():
@@ -44,7 +44,7 @@ func _request_tile(tile_coords: Vector2):
 	active_requests[tile_coords] = http_request
 	mutex.unlock()
 
-func _http_request_completed(status: int, response_code: int, headers: PackedStringArray, body: PackedByteArray, tile_coords):
+func _http_request_completed(status: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, tile_coords):
 	mutex.lock()
 	if active_requests.has(tile_coords):
 		active_requests[tile_coords].queue_free()
@@ -81,7 +81,6 @@ func create_mesh_instance_with_texture(texture: Texture, tile_coords: Vector2) -
 	mesh_instance.mesh = plane_mesh
 	mesh_instance.material_override = material
 
-	var grid_position = Vector3(tile_coords.x * tile_size.x, 0, tile_coords.y * tile_size.y)
 	call_deferred_thread_group("set_mesh_origin", mesh_instance, tile_coords)
 	call_deferred_thread_group("emit_signal", "mesh_ready_to_add", mesh_instance)
 
