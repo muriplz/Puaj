@@ -19,15 +19,16 @@ func render_chunks(tile_coords: Vector2):
 	var render_distance = Utils.render_distance
 	var tiles_to_keep = []
 
-	for y in range(-render_distance, render_distance + 1):
-		for x in range(-render_distance + abs(y), render_distance - abs(y) + 1):
-			for z in range(-render_distance + abs(y), render_distance - abs(y) + 1):
-				if abs(x) + abs(z) <= render_distance:
-					var current_tile = tile_coords + Vector2(x, z)
-					request_tile_image(current_tile)
-					tiles_to_keep.append(current_tile)
-					
-	var loaded_tiles_keys = Utils.loaded_tiles.keys()  # Use keys() to iterate over tile coordinates
+	for offset in range(render_distance + 1):
+		for y in range(-offset, offset + 1):
+			for x in range(-offset, offset + 1):
+				if x * x + y * y <= render_distance * render_distance:
+					var current_tile = tile_coords + Vector2(x, y)
+					if not tiles_to_keep.has(current_tile):
+						request_tile_image(current_tile)
+						tiles_to_keep.append(current_tile)
+
+	var loaded_tiles_keys = Utils.loaded_tiles.keys()
 	for key in loaded_tiles_keys:
 		if not tiles_to_keep.has(Vector2(key.x, key.y)):
 			unload_tile(Vector2(key.x, key.y))
