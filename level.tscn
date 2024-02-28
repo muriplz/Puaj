@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cxynsi2vr6h6t"]
+[gd_scene load_steps=10 format=3 uid="uid://cxynsi2vr6h6t"]
 
 [ext_resource type="Script" path="res://scripts/player/PlayerMovement.gd" id="1_qetjv"]
 [ext_resource type="Script" path="res://scripts/Level.gd" id="1_qh5ps"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://scripts/player/PlayerCamera.gd" id="2_j6n1o"]
 [ext_resource type="Script" path="res://scripts/TileManager.gd" id="3_carvu"]
 [ext_resource type="Script" path="res://scripts/TileGetter.gd" id="4_1lgmd"]
+[ext_resource type="Script" path="res://Hall.gd" id="7_ygmds"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_x3jx3"]
 
@@ -55,19 +56,19 @@ anchor_left = 1.45
 anchor_top = 1.0
 anchor_right = 1.45
 anchor_bottom = 1.0
-offset_left = 34.0
-offset_top = -3.0
-offset_right = 104.0
-offset_bottom = 64.0
+offset_left = -34.0
+offset_top = -20.0
+offset_right = 36.0
+offset_bottom = 47.0
 script = ExtResource("1_r7q8o")
 
 [node name="Hall" type="MarginContainer" parent="UI"]
-visible = false
 layout_mode = 0
-offset_left = 60.0
-offset_top = 124.0
-offset_right = 298.0
-offset_bottom = 414.0
+offset_left = 1.0
+offset_top = -1.0
+offset_right = 350.0
+offset_bottom = 647.0
+script = ExtResource("7_ygmds")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/Hall"]
 layout_mode = 2
