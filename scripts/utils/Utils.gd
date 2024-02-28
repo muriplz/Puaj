@@ -1,11 +1,42 @@
 class_name Utils
 
-static var zoom = 15
-static var render_distance = 1
-static var tile_size = Vector2(50, 50)  # Size of a tile in game units
-static var origin_latlon = Vector2(38.870127, -6.989353)  # Latitude and Longitude of the game world's origin
+# Constants for conversion calculations
+const DEGREES_IN_CIRCLE = 360.0
+const RADIANS_IN_CIRCLE = PI * 2
+const EARTH_RADIUS_IN_METERS = 6378137.0  # Standard value
+
+static var zoom = 17
+static var render_distance = 7
+static var tile_size = Vector2(100, 100)  # Size of a tile in game units
+static var origin_latlon = Vector2(40.963292, -5.674035)  # Latitude and Longitude of the game world's origin
 static var origin_tile = latlon_to_tile(origin_latlon.x, origin_latlon.y)
 static var meters_per_unit = 1.0  # How many meters in the real world one game unit represents
+
+static var loaded_tiles = {}
+static var loaded_meshes = {}
+
+# Helper methods for angle conversions
+static func deg_to_rad(deg: float) -> float:
+	return deg * PI / 180.0
+
+static func rad_to_deg(rad: float) -> float:
+	return rad * 180.0 / PI
+
+# Converts latitude/longitude to tile coordinates at the current zoom level
+static func latlon_to_tile(lat: float, lon: float) -> Vector2:
+	var n = pow(2.0, zoom)
+	var x = int((lon + 180.0) / 360.0 * n)
+	var lat_rad = deg_to_rad(lat)
+	var y = int((1.0 - log(tan(lat_rad) + 1 / cos(lat_rad)) / PI) / 2.0 * n)
+	return Vector2(x, y)
+
+# Converts tile coordinates at the current zoom level to latitude/longitude
+static func tile_to_latlon(x: int, y: int) -> Vector2:
+	var n = pow(2.0, zoom)
+	var lon_deg = x / n * 360.0 - 180.0
+	var lat_rad = atan(sinh(PI * (1 - 2 * y / n)))
+	var lat_deg = rad_to_deg(lat_rad)
+	return Vector2(lat_deg, lon_deg)
 
 # Converts a world position (Vector3) to latitude/longitude (Vector2)
 static func world_to_latlon(world_position: Vector3) -> Vector2:
@@ -30,19 +61,3 @@ static func tile_to_world(x: int, y: int) -> Vector3:
 	var world_x = (x - origin_tile.x) * tile_size.x
 	var world_z = (y - origin_tile.y) * tile_size.y  # Assuming Z-axis is North/South in Godot
 	return Vector3(world_x, 0, world_z)
-# Function to convert latitude and longitude to tile coordinates
-static func latlon_to_tile(lat: float, lon: float) -> Vector2:
-	var n: float = pow(2.0, zoom)
-	var x: int = int((lon + 180.0) / 360.0 * n)
-	var lat_rad: float = deg_to_rad(lat)
-	var y: int = int((1.0 - log(tan(lat_rad) + 1.0 / cos(lat_rad)) / PI) / 2.0 * n)
-	return Vector2(x, y)
-
-# Function to convert tile coordinates to latitude and longitude
-static func tile_to_latlon(x: int, y: int) -> Vector2:
-	var n: float = pow(2.0, zoom)
-	var lon_deg: float = x / n * 360.0 - 180.0
-	var lat_rad: float = atan(sinh(PI * (1.0 - 2.0 * y / n)))
-	var lat_deg: float = deg_to_rad(lat_rad)
-	return Vector2(lat_deg, lon_deg)
-

@@ -4,8 +4,8 @@
 [ext_resource type="Script" path="res://scripts/Level.gd" id="1_qh5ps"]
 [ext_resource type="Script" path="res://scripts/UIOpener.gd" id="1_r7q8o"]
 [ext_resource type="Script" path="res://scripts/player/PlayerCamera.gd" id="2_j6n1o"]
-[ext_resource type="Script" path="res://scripts/tile_manager.gd" id="3_carvu"]
-[ext_resource type="Script" path="res://scripts/tile_getter.gd" id="4_1lgmd"]
+[ext_resource type="Script" path="res://scripts/TileManager.gd" id="3_carvu"]
+[ext_resource type="Script" path="res://scripts/TileGetter.gd" id="4_1lgmd"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_x3jx3"]
 
@@ -84,4 +84,4 @@ text = "Button"
 layout_mode = 2
 text = "Button"
 
-[connection signal="image_loaded" from="TileManager/TileGetter" to="TileManager" method="_on_image_loaded"]
+[connection signal="mesh_ready_to_add" from="TileManager/TileGetter" to="TileManager" method="_on_mesh_ready_to_add"]
