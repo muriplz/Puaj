@@ -1,9 +1,8 @@
 extends Node
 
-# Reference to the TileGetter node
 @onready var tile_getter = $TileGetter
-# Dictionary to keep track of loaded tiles
-var tile_size = Utils.tile_size  # Size in pixels
+
+var tile_size = Utils.tile_size
 
 func unload_tile(tile_coords: Vector2):
 	if Utils.loaded_tiles.has(tile_coords):
@@ -13,7 +12,7 @@ func unload_tile(tile_coords: Vector2):
 # Functionality to request a tile image based on its coordinates
 func request_tile_image(tile_coords: Vector2):
 	if not Utils.loaded_tiles.has(tile_coords):
-		tile_getter.queue_tile(tile_coords)  # Assumes TileGetter has a request_image method
+		tile_getter.queue_tile(tile_coords)
 
 func render_chunks(tile_coords: Vector2):
 	var render_distance = Utils.render_distance
@@ -36,7 +35,7 @@ func render_chunks(tile_coords: Vector2):
 func unload_mesh(tile_coords: Vector2):
 	var key := str(tile_coords)
 	if Utils.loaded_meshes.has(key):
-		# Explicitly cast the retrieved value to MeshInstance3D
+
 		var mesh_instance := Utils.loaded_meshes[key] as MeshInstance3D
 		if mesh_instance:
 			mesh_instance.queue_free() # Remove the mesh instance from the scene

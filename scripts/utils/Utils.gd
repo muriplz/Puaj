@@ -10,7 +10,6 @@ static var render_distance = 7
 static var tile_size = Vector2(100, 100)  # Size of a tile in game units
 static var origin_latlon = Vector2(40.963292, -5.674035)  # Latitude and Longitude of the game world's origin
 static var origin_tile = latlon_to_tile(origin_latlon.x, origin_latlon.y)
-static var meters_per_unit = 1.0  # How many meters in the real world one game unit represents
 
 static var loaded_tiles = {}
 static var loaded_meshes = {}
