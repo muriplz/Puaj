@@ -1,0 +1,6 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://dhx7cnntkf7ov"]
+
+[ext_resource type="FontFile" uid="uid://bx1wva0dmj4v7" path="res://assets/Anta-Regular.ttf" id="1_vgjkn"]
+
+[resource]
+default_font = ExtResource("1_vgjkn")
