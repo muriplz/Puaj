@@ -5,7 +5,7 @@ var hall
 
 func _ready():
 	# Find the Hall panel container node
-	hall = get_node("../Hall")
+	hall = $"../PanelContainer"
 	hall.visible = false
 	# Connect the button's "pressed" signal to the _on_BurguerOpener_pressed() method
 	connect("pressed", Callable(self, "_on_BurguerOpener_pressed"))
