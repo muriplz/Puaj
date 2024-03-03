@@ -145,12 +145,6 @@ func update_top_down_camera_position():
 
 func _on_view_mode_toggled(toggled_on):
 	use_orbit_camera = !toggled_on
-	if use_orbit_camera:
-		set_initial_camera_position()
-	else:
-		top_down_height = 50.0
-		top_down_position = Vector2.ZERO
-		update_top_down_camera_position()
 
 func _unhandled_input(event):
 	if not use_orbit_camera and is_dragging:

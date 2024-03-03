@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://cxynsi2vr6h6t"]
+[gd_scene load_steps=13 format=3 uid="uid://cxynsi2vr6h6t"]
 
 [ext_resource type="Script" path="res://scripts/player/PlayerMovement.gd" id="1_qetjv"]
 [ext_resource type="Script" path="res://scripts/Level.gd" id="1_qh5ps"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://PanelContainer.gd" id="7_xoqk8"]
 [ext_resource type="Script" path="res://scripts/Hall.gd" id="7_ygmds"]
 [ext_resource type="Script" path="res://ViewModeCheckBox.gd" id="9_ahadv"]
+[ext_resource type="Script" path="res://Label.gd" id="10_vntcw"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_x3jx3"]
 
@@ -99,6 +100,11 @@ size_flags_vertical = 3
 layout_mode = 2
 text = "@Footer - 2024, All Rights Reserved"
 horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 21.0
+script = ExtResource("10_vntcw")
 
 [connection signal="mesh_ready_to_add" from="TileManager/TileGetter" to="TileManager" method="_on_mesh_ready_to_add"]
 [connection signal="toggled" from="Control/PanelContainer/Hall/Buttons/HBoxContainer/ViewModeToggler" to="Player/Camera3D" method="_on_view_mode_toggled"]

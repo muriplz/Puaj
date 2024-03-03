@@ -82,7 +82,6 @@ func create_mesh_instance_with_texture(texture: Texture, tile_coords: Vector2) -
 	mesh_instance.material_override = material
 
 	call_deferred_thread_group("set_mesh_origin", mesh_instance, tile_coords)
-	call_deferred_thread_group("emit_signal", "mesh_ready_to_add", mesh_instance)
 
 	return mesh_instance
 
@@ -98,3 +97,5 @@ func set_mesh_origin(mesh_instance, tile_coords):
 
 	# Set the mesh instance's origin to the calculated grid position
 	mesh_instance.transform.origin = grid_position
+	
+	call_deferred_thread_group("emit_signal", "mesh_ready_to_add", mesh_instance)
