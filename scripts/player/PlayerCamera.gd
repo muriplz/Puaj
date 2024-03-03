@@ -20,11 +20,10 @@ var top_down_position = Vector2.ZERO
 var use_orbit_camera = true
 
 # Multitouch zooming
+var is_pinching := false
+var initial_pinch_distance := -1.0
+var last_scale_factor := 1.0
 var touch_points: Dictionary = {}
-var first_finger_pos: Vector2 = Vector2.ZERO
-var second_finger_pos: Vector2 = Vector2.ZERO
-var is_pinching: bool = false
-var pinch_start_distance: float = -1
 
 func _ready():
 	player = get_parent()
@@ -73,58 +72,43 @@ func handle_multitouch(event):
 	if event is InputEventScreenTouch:
 		if event.pressed:
 			touch_points[event.index] = event.position
+			# Reset for a new pinch gesture if two fingers are down
+			if touch_points.size() == 2:
+				var touch_positions = Array(touch_points.values())
+				initial_pinch_distance = touch_positions[0].distance_to(touch_positions[1])
+				last_scale_factor = 1.0
+				is_pinching = true
 		else:
 			touch_points.erase(event.index)
 			if touch_points.size() < 2:
-				reset_pinch_state()
+				is_pinching = false
 
-	if event is InputEventScreenDrag:
-		if touch_points.has(event.index):
-			touch_points[event.index] = event.position
+	elif event is InputEventScreenDrag and is_pinching:
+		if touch_points.size() == 2:
+			if touch_points.has(event.index):
+				touch_points[event.index] = event.position
 
-		if not is_pinching and touch_points.size() == 2:
-			var positions: Array = touch_points.values()
-			first_finger_pos = positions[0]
-			second_finger_pos = positions[1]
-			pinch_start_distance = first_finger_pos.distance_to(second_finger_pos)
-			is_pinching = true
+			var touch_positions = Array(touch_points.values())
+			var current_distance = touch_positions[0].distance_to(touch_positions[1])
+			var current_scale_factor = current_distance / initial_pinch_distance
 
-	if is_pinching and touch_points.size() == 2:
-		var positions: Array = touch_points.values()
-		first_finger_pos = positions[0]
-		second_finger_pos = positions[1]
-		var current_distance = first_finger_pos.distance_to(second_finger_pos)
-		
-		# Define a sensitivity scaling factor (smaller values = less sensitivity)
-		var sensitivity_scale = 0.01  # Adjust this value as needed for desired sensitivity
+		# Calculate change in scale from the last frame to this frame
+			var scale_change = current_scale_factor / last_scale_factor
+			last_scale_factor = current_scale_factor  # Update last_scale_factor for the next frame
 
-		# Adjust the pinch factor calculation with the sensitivity scaling
-		var pinch_factor = 1 + ((pinch_start_distance / current_distance - 1) * sensitivity_scale)
+		# Correctly apply the change in scale to the camera for intended zoom direction
+			if use_orbit_camera:
+				distance /= scale_change  # Invert the zoom direction
+				distance = clamp(distance, 5, 100)
+			else:
+				top_down_height /= scale_change  # Invert the zoom direction
+				top_down_height = clamp(top_down_height, 10, 1000)
 
-
-		if use_orbit_camera:
-			distance *= pinch_factor
-			distance = clamp(distance, 5, 100)
-		else:
-			top_down_height *= pinch_factor
-			top_down_height = clamp(top_down_height, 10, 1000)
-
+		# Update camera position
 		if use_orbit_camera:
 			update_orbit_camera_position()
 		else:
 			update_top_down_camera_position()
-
-	if touch_points.size() < 2:
-		reset_pinch_state()
-
-
-func reset_pinch_state():
-	is_pinching = false
-	pinch_start_distance = -1
-	first_finger_pos = Vector2.ZERO
-	second_finger_pos = Vector2.ZERO
-	# No need to clear touch_points here as it's managed in _input
-
 
 	
 func _process(delta):
