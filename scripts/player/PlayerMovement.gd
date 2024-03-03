@@ -32,9 +32,4 @@ func _physics_process(_delta):
 	direction = direction.normalized() * speed
 
 	move_and_collide(direction)
-	update_tiles_around_player()
-
-func update_tiles_around_player():
-	var tile_coords = Utils.world_to_tile(global_transform.origin)
-	tile_manager.render_chunks(tile_coords)
 
