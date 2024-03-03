@@ -1,10 +1,10 @@
 extends Node
 
-signal mesh_ready_to_add(mesh_instance)
+signal mesh_ready_to_add
 
 var active_requests = {}
 var request_queue = []
-var max_concurrent_requests = 3
+var max_concurrent_requests = OS.get_processor_count() - 1
 var thread_pool = []
 var mutex = Mutex.new()
 var tile_size = Utils.tile_size
