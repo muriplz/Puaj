@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://cxynsi2vr6h6t"]
+[gd_scene load_steps=9 format=3 uid="uid://cxynsi2vr6h6t"]
 
 [ext_resource type="Script" path="res://scripts/player/PlayerMovement.gd" id="1_qetjv"]
 [ext_resource type="Script" path="res://scripts/Level.gd" id="1_qh5ps"]
@@ -6,10 +6,6 @@
 [ext_resource type="Script" path="res://scripts/player/PlayerCamera.gd" id="2_j6n1o"]
 [ext_resource type="Script" path="res://scripts/TileManager.gd" id="3_carvu"]
 [ext_resource type="Script" path="res://scripts/TileGetter.gd" id="4_1lgmd"]
-[ext_resource type="Script" path="res://PanelContainer.gd" id="7_xoqk8"]
-[ext_resource type="Script" path="res://scripts/Hall.gd" id="7_ygmds"]
-[ext_resource type="Script" path="res://ViewModeCheckBox.gd" id="9_ahadv"]
-[ext_resource type="Script" path="res://Label.gd" id="10_vntcw"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_x3jx3"]
 
@@ -45,66 +41,66 @@ transform = Transform3D(0.940893, 0.338705, 1.62622e-08, -0.295241, 0.820154, 0.
 
 [node name="Control" type="CanvasLayer" parent="."]
 
-[node name="BurguerOpener" type="Button" parent="Control"]
-offset_left = 139.0
-offset_top = 60.0
-offset_right = 178.0
-offset_bottom = 94.0
-script = ExtResource("1_r7q8o")
-
-[node name="PanelContainer" type="PanelContainer" parent="Control"]
-offset_right = 374.0
-offset_bottom = 639.0
-script = ExtResource("7_xoqk8")
-
-[node name="Hall" type="MarginContainer" parent="Control/PanelContainer"]
-layout_mode = 2
+[node name="UI" type="PanelContainer" parent="Control"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource("7_ygmds")
 
-[node name="Buttons" type="VBoxContainer" parent="Control/PanelContainer/Hall"]
+[node name="Buttons" type="VBoxContainer" parent="Control/UI"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/PanelContainer/Hall/Buttons"]
+[node name="ViewMode" type="HBoxContainer" parent="Control/UI/Buttons"]
 layout_mode = 2
 
-[node name="Control" type="Control" parent="Control/PanelContainer/Hall/Buttons/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="ViewModeToggler" type="CheckButton" parent="Control/PanelContainer/Hall/Buttons/HBoxContainer"]
+[node name="Control" type="Control" parent="Control/UI/Buttons/ViewMode"]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="ViewModeToggler" type="CheckButton" parent="Control/UI/Buttons/ViewMode"]
+layout_mode = 2
 size_flags_vertical = 0
 text = "View Mode"
-script = ExtResource("9_ahadv")
 
-[node name="Profile" type="Button" parent="Control/PanelContainer/Hall/Buttons"]
+[node name="HSeparator" type="HSeparator" parent="Control/UI/Buttons"]
+layout_mode = 2
+
+[node name="Profile" type="Button" parent="Control/UI/Buttons"]
+layout_mode = 2
+text = "Profile"
+
+[node name="Moderation" type="Button" parent="Control/UI/Buttons"]
 layout_mode = 2
 text = "Button"
 
-[node name="Moderation" type="Button" parent="Control/PanelContainer/Hall/Buttons"]
+[node name="Whatever" type="Button" parent="Control/UI/Buttons"]
 layout_mode = 2
 text = "Button"
 
-[node name="Whatever" type="Button" parent="Control/PanelContainer/Hall/Buttons"]
-layout_mode = 2
-text = "Button"
-
-[node name="Spacer" type="Control" parent="Control/PanelContainer/Hall/Buttons"]
+[node name="Spacer" type="Control" parent="Control/UI/Buttons"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="Control/PanelContainer/Hall/Buttons"]
+[node name="Label" type="Label" parent="Control/UI/Buttons"]
 layout_mode = 2
 text = "@Footer - 2024, All Rights Reserved"
 horizontal_alignment = 1
 
-[node name="Label" type="Label" parent="."]
-offset_right = 40.0
-offset_bottom = 21.0
-script = ExtResource("10_vntcw")
+[node name="UIOpener" type="Button" parent="Control"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -19.5
+offset_top = -34.0
+offset_right = 19.5
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("1_r7q8o")
 
 [connection signal="mesh_ready_to_add" from="TileManager/TileGetter" to="TileManager" method="_on_mesh_ready_to_add"]
-[connection signal="toggled" from="Control/PanelContainer/Hall/Buttons/HBoxContainer/ViewModeToggler" to="Player/Camera3D" method="_on_view_mode_toggled"]
+[connection signal="toggled" from="Control/UI/Buttons/ViewMode/ViewModeToggler" to="Player/Camera3D" method="_on_view_mode_toggled"]
